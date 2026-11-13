@@ -25,6 +25,9 @@ permissions:
   packages: write     # GITHUB_TOKEN pushes to ghcr.io/<owner>/<repo>
 
 env:
+  # gh CLI inside a runner does NOT inherit GITHUB_TOKEN — the first `gh api`
+  # call fails (exit 4) without this.
+  GH_TOKEN: ${{ github.token }}
   # GHCR rejects mixed-case image names, and GitHub expressions have no pipe
   # filter (| lowercase is invalid syntax) — hardcode the fully-lowercase
   # name, same pattern as eventally's IMAGE_NAME.
