@@ -99,10 +99,19 @@ jobs:
           curl -s http://127.0.0.1:3000/v1/capabilities | head -c 500 || true
           docker rm -f crw-smoke
 
+      # docker/login-action is the proven pattern (raw `docker login -p
+      # "$GITHUB_TOKEN"` failed on the runner with "password is empty").
+      - name: Log in to GHCR
+        if: steps.check.outputs.skip != 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+
       - name: Push image
         if: steps.check.outputs.skip != 'true'
         run: |
-          docker login ghcr.io -u "$GITHUB_ACTOR" -p "$GITHUB_TOKEN"
           docker push "$IMAGE:${{ steps.tag.outputs.tag }}"
           docker push "$IMAGE:latest"
 
