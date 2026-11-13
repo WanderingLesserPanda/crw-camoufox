@@ -25,9 +25,10 @@ permissions:
   packages: write     # GITHUB_TOKEN pushes to ghcr.io/<owner>/<repo>
 
 env:
-  # GHCR rejects mixed-case names (owner "WanderingLesserPanda" contains
-  # uppercase) — same gotcha as the Eventally P9.1 fix.
-  IMAGE: ghcr.io/${{ github.repository | lowercase }}
+  # GHCR rejects mixed-case image names, and GitHub expressions have no pipe
+  # filter (| lowercase is invalid syntax) — hardcode the fully-lowercase
+  # name, same pattern as eventally's IMAGE_NAME.
+  IMAGE: ghcr.io/wanderinglesserpanda/crw-camoufox
 
 jobs:
   build:
